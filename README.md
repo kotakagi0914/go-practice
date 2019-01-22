@@ -9,9 +9,14 @@ $ make grpc-build
 
 ## Build gRPC server
 $ make build
+## Run gRPC server
+$ ./bin/server
 
 ## Build gRPC client
-$ make client-build
+$ make client-build¥
+## Try gRPC client
+$ ./bin/client
+$ ./bin/client Sheva
 
 ## Clean bins
 $ make clean

@@ -4,9 +4,10 @@ GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 
+SRCDIR=src
 PROTOC=protoc
-PBDIR=pb
-PROTO_TARGET=protos/practice.proto
+PBDIR=$(SRCDIR)/pb
+PROTO_TARGET=$(SRCDIR)/protos/practice.proto
 BINDIR=bin
 
 install-pkgs:
@@ -17,19 +18,19 @@ grpc-build:
 	@if [ ! -d $(PBDIR) ]; \
 		then mkdir $(PBDIR); \
 		fi
-	$(PROTOC) -I=protos $(PROTO_TARGET) --go_out=plugins=grpc:$(PBDIR)
+	$(PROTOC) -I=$(SRCDIR)/protos $(PROTO_TARGET) --go_out=plugins=grpc:$(PBDIR)
 
-build: grpc-build
+build:
 	@if [ ! -d $(BINDIR) ]; \
 		then mkdir $(BINDIR); \
 		fi
-	$(GOBUILD) -o $(BINDIR)/main
+	$(GOBUILD) -o $(BINDIR)/server src/main.go
 
-client-build: grpc-build
+client-build:
 	@if [ ! -d $(BINDIR) ]; \
 		then mkdir $(BINDIR); \
 		fi
-	$(GOBUILD) -o $(BINDIR)/client client/client.go
+	$(GOBUILD) -o $(BINDIR)/client $(SRCDIR)/client/client.go
 
 
 clean:

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
@@ -25,7 +26,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	s = grpc.NewServer()
+	s := grpc.NewServer()
 	pb.RegisterPracticeServer(s, &server{})
 
 	if err = s.Serve(lis); err != nil {
@@ -34,9 +35,9 @@ func main() {
 }
 
 func (s *server) SayHelloToWorld(ctx context.Context, in *pb.SayHelloToWorldRequest) (out *pb.SayHelloToWorldResponse, err error) {
-	fmt.Println("Received: %v", in.Name)
-	message := fmt.Sprintf("Hello %v's world!", in.Name)
+	fmt.Printf("Received: %v\n", in.Name)
+	message := fmt.Sprintf("Hello %v's world!\n", in.Name)
 	fmt.Println(message)
-	out.message = message
-	return out, nil
+	// out.Message = message
+	return &pb.SayHelloToWorldResponse{Message: message}, nil
 }

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"os"
 
 	"github.com/sheva0914/go-practice/src/middleware"
 	pb "github.com/sheva0914/go-practice/src/pb"
@@ -19,29 +18,31 @@ const (
 type server struct{}
 
 func main() {
-	fmt.Println("Server running...")
+	log.Println("Server running...")
 
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
-		os.Exit(1)
 	}
 
+	// Create a server with middleware
 	s := grpc.NewServer(
 		grpc.UnaryInterceptor(
 			middleware.AuthInterceptor(),
 		),
 	)
+	// Register gRPC Server to the server
 	pb.RegisterPracticeServer(s, &server{})
 
+	// Listen and serve
 	if err = s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
 }
 
-func (s *server) SayHelloToWorld(ctx context.Context, in *pb.SayHelloToWorldRequest) (out *pb.SayHelloToWorldResponse, err error) {
-	fmt.Printf("Received: %v\n", in.Name)
+func (s *server) SayHelloToWorld(ctx context.Context, in *pb.SayHelloToWorldRequest) (*pb.SayHelloToWorldResponse, error) {
+	log.Printf("Received: %v\n", in.Name)
 	message := fmt.Sprintf("Hello %v's world!\n", in.Name)
-	fmt.Println(message)
+	log.Println(message)
 	return &pb.SayHelloToWorldResponse{Message: message}, nil
 }

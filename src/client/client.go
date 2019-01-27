@@ -4,10 +4,10 @@ import (
 	"context"
 	"log"
 	"os"
-	"time"
 
 	pb "github.com/sheva0914/go-practice/src/pb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 const (
@@ -30,8 +30,7 @@ func main() {
 		name = os.Args[1]
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
+	ctx := metadata.NewOutgoingContext(context.Background(), metadata.Pairs("token", "good"))
 
 	res, err := client.SayHelloToWorld(ctx, &pb.SayHelloToWorldRequest{Name: name})
 	if err != nil {
